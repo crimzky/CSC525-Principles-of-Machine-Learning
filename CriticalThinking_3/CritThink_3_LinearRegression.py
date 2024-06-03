@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 
 # Load the dataset from the relative path. Dataset downloaded from https://www.kaggle.com/datasets/funxexcel/boston-housing-dataset-with-column-names as the load_boston() is depreciated
 # Assuming the CSV file is in the same directory as the script
@@ -29,3 +29,7 @@ y_pred = model.predict(X_test)
 # Evaluate the model's performance using Mean Squared Error (MSE)
 mse = mean_squared_error(y_test, y_pred)
 print(f'Mean Squared Error: {mse}')
+
+# Evaluate the model's performance using Mean Squared Error (MSE
+r2 = r2_score(y_test, y_pred)
+print(f'R-Squared: {r2}')
