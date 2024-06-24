@@ -1,3 +1,4 @@
+import pandas as pd
 import torch
 from transformers import BertTokenizer, BertForMaskedLM
 import random
@@ -57,20 +58,30 @@ def augment_text(text, top_k=7, swap_prob=0.5):
     # Join the augmented words into a single string
     return ' '.join(augmented_text)
 
-def test_augmentation():
-    # Define a static test set
-    test_texts = [
-        "The quick brown fox jumps over the lazy dog.",
-        "I love programming in Python.",
-        "Artificial Intelligence is the future.",
-        "The weather today is sunny and bright."
-    ]
+def process_csv(input_csv, output_csv, text_column, top_k=7, swap_prob=0.5):
+    """
+    Process the text dataset in a CSV file, augment each text, and save the augmented text to a new CSV file.
 
-    # Augment each text in the test set
-    for text in test_texts:
-        augmented_text = augment_text(text)
-        print(f"Original Text: {text}")
-        print(f"Augmented Text: {augmented_text}\n")
+    Args:
+    input_csv (str): The input CSV file containing text data.
+    output_csv (str): The output CSV file to save augmented text data.
+    text_column (str): The column name containing text to augment.
+    top_k (int): The number of similar words to consider for each swap (default is 5).
+    swap_prob (float): The probability of swapping each word (default is 0.3).
+    """
+    # Read the input CSV file
+    df = pd.read_csv(input_csv)
 
-# Run the test
-test_augmentation()
+    # Augment the text in each row
+    df['augmented_text'] = df[text_column].apply(lambda x: augment_text(x, top_k, swap_prob))
+
+    # Save the augmented text to the output CSV file
+    df.to_csv(output_csv, index=False)
+
+# Define input and output CSV files and the text column
+input_csv = "text_dataset/text_dataset.csv"
+output_csv = "augment_dataset/augmented_dataset.csv"
+text_column = "Sentence"
+
+# Process the CSV file
+process_csv(input_csv, output_csv, text_column)
